@@ -1,0 +1,23 @@
+---
+image: abhishekf5/maven-abhishek-docker-agent:v1
+variables:
+  SONAR_HOST_URL: http://100.24.17.15:9000/
+  SONAR_LOGIN: ${SONAR_LOGIN}
+before_script:
+  - cd java-maven-sonarjava-maven-sonar-argocd-helm-k8s/spring-boot-app
+stages:
+  - build
+  - test
+  - sonarqube
+  - dockerization
+build-job:
+  stage: build
+  script:
+    - echo "compiling the code.."
+    - mvn clean package
+  unit-test-job:
+    stage: test
+    script:
+      - echo "scanning code"
+      - mvn sonar:sonar -Dsonar.host.url=${SONAR_HOST_URL}
+        -Dsonar.login=${SONAR_LOGIN}
